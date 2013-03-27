@@ -6,13 +6,17 @@ include_recipe "zsh"
 if ENV.key?("SUDO_USER") && ENV["SUDO_USER"] != ENV["USER"]
 	user_id = ENV["SUDO_USER"]
 else
-	user_id ENV["USER"]	
+	user_id = ENV["USER"]	
 end
 
 if node[:platform] == 'mac_os_x'
 	user_home = "/Users/#{user_id}"
 else
-	user_home = "/home/#{user_id}"
+	if ENV.key?("SUDO_USER") && ENV["SUDO_USER"]
+		user_home = "/root"
+	else
+		user_home = "/home/#{user_id}"
+	end
 end
 
 git "#{user_home}/.oh-my-zsh" do 
